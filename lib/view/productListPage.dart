@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,9 +10,10 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   late Future<List<dynamic>> _products;
 
+  final String httpUrl = 'https://crudcrud.com/api/d6d41bd1aed74c99a6e821805e5aea5d/unicorns';
+
   Future<List<dynamic>> fetchProducts() async {
-    final response = await http.get(Uri.parse(
-        'https://crudcrud.com/api/4d5b595620e247e3a2f56e24ee44f761/unicorns'));
+    final response = await http.get(Uri.parse(httpUrl));
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -25,8 +25,7 @@ class _ProductListPageState extends State<ProductListPage> {
       String category, String image) async {
     try {
       final response = await http.post(
-        Uri.parse(
-            'https://crudcrud.com/api/4d5b595620e247e3a2f56e24ee44f761/unicorns'),
+        Uri.parse(httpUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -40,8 +39,6 @@ class _ProductListPageState extends State<ProductListPage> {
       );
 
       if (response.statusCode == 201) {
-        // Product added successfully
-        // Refresh the product list
         setState(() {
           _products = fetchProducts();
         });
@@ -55,11 +52,8 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Future<void> deleteProduct(String productId) async {
     try {
-      final response = await http.delete(Uri.parse(
-          'https://crudcrud.com/api/4d5b595620e247e3a2f56e24ee44f761/unicorns/$productId'));
+      final response = await http.delete(Uri.parse('$httpUrl/$productId'));
       if (response.statusCode == 200) {
-        // Product deleted successfully
-        // Refresh the product list if _products is not null
         setState(() {
           _products = fetchProducts();
         });
@@ -75,8 +69,7 @@ class _ProductListPageState extends State<ProductListPage> {
       String description, String category, String image) async {
     try {
       final response = await http.put(
-        Uri.parse(
-            'https://crudcrud.com/api/4d5b595620e247e3a2f56e24ee44f761/unicorns/$productId'),
+        Uri.parse('$httpUrl/$productId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -90,8 +83,6 @@ class _ProductListPageState extends State<ProductListPage> {
       );
 
       if (response.statusCode == 200) {
-        // Product updated successfully
-        // Refresh the product list
         setState(() {
           _products = fetchProducts();
         });
